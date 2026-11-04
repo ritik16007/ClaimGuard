@@ -84,7 +84,7 @@ Tables include `users`, `receipts`, `claims`, `audit_log`, and `policy_vectors`.
 
 ## Receipt OCR note
 
-Text-based PDFs can be read using the included `pypdf` package. For image OCR, install Tesseract OCR for Windows and ensure `tesseract.exe` is on PATH. Without the Tesseract program, image uploads are still accepted and stored, but uncertain claims go to review. A scan is not guaranteed to be readable, and OCR is not fraud or authenticity detection.
+Text-based PDFs are read with `pypdf`. Image receipts and scanned PDFs use the bundled local RapidOCR engine, with Tesseract as an optional fallback. The first package setup now installs RapidOCR and its ONNX CPU runtime; it may take a little longer. OCR runs on the computer, and an unreadable amount or date still goes to authority review. OCR is not fraud or authenticity detection.
 
 ## Run the tests
 

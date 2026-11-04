@@ -23,18 +23,54 @@ def parse_date(value):
     return None
 
 def extract_receipt_text(data, ext):
-    """Best-effort local extraction; empty means uncertain and forces human review."""
+    """Extract selectable PDF text, then fall back to local OCR for images/scans."""
+    import io
     if ext==".pdf":
         try:
             from pypdf import PdfReader
-            import io
-            return "\n".join((p.extract_text() or "") for p in PdfReader(io.BytesIO(data)).pages).strip()
-        except Exception: return ""
+            text="\n".join((p.extract_text() or "") for p in PdfReader(io.BytesIO(data)).pages).strip()
+            if text:return text
+            # Scanned PDFs have no selectable text; rasterize pages and OCR them.
+            from pypdfium2 import PdfDocument
+            from PIL import Image
+            pdf=PdfDocument(data); pages=[]
+            for page in pdf:
+                bitmap=page.render(scale=2.5)
+                pages.append(_ocr_image(bitmap.to_pil().convert("RGB")))
+            return "\n".join(pages).strip()
+        except Exception:
+            try:
+                from pypdfium2 import PdfDocument
+                pdf=PdfDocument(data)
+                return "\n".join(_ocr_image(p.render(scale=2.5).to_pil().convert("RGB")) for p in pdf).strip()
+            except Exception:return ""
     try:
         from PIL import Image
-        import io, pytesseract
-        return pytesseract.image_to_string(Image.open(io.BytesIO(data)))
+        image=Image.open(io.BytesIO(data)).convert("RGB")
+        return _ocr_image(image)
     except Exception: return ""
+
+_rapid_ocr=None
+def _ocr_image(image):
+    """Prefer bundled local OCR; use Tesseract as a local fallback when present."""
+    global _rapid_ocr
+    try:
+        import numpy as np
+        from rapidocr import RapidOCR
+        if _rapid_ocr is None:_rapid_ocr=RapidOCR()
+        result=_rapid_ocr(np.asarray(image))
+        lines=[str(t).strip() for t in (getattr(result,"txts",None) or ()) if str(t).strip()]
+        if lines:return "\n".join(lines)
+    except Exception:
+        pass
+    try:
+        import pytesseract
+        from PIL import ImageOps, ImageEnhance, ImageFilter
+        gray=ImageOps.grayscale(image)
+        if gray.width<1400:gray=gray.resize((gray.width*2,gray.height*2))
+        gray=ImageEnhance.Contrast(gray).enhance(1.7).filter(ImageFilter.SHARPEN)
+        return pytesseract.image_to_string(gray,config="--psm 6")
+    except Exception:return ""
 
 def extract_amount(text):
     if not text: return None
