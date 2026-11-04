@@ -29,7 +29,11 @@ def suspicious(text):
 def parse_date(value):
     if not value: return None
     value=str(value).strip()
-    for fmt in ("%Y-%m-%d","%Y/%m/%d","%d/%m/%Y","%d-%m-%Y","%d.%m.%Y","%d/%m/%y","%d-%m-%y"):
+    value=re.sub(r"(?<=\d)(?:st|nd|rd|th)\b","",value,flags=re.I)
+    value=re.sub(r"\s*,\s*"," ",value)
+    formats=("%Y-%m-%d","%Y/%m/%d","%d/%m/%Y","%d-%m-%Y","%d.%m.%Y","%d/%m/%y","%d-%m-%y",
+             "%d %b %Y","%d %B %Y","%b %d %Y","%B %d %Y")
+    for fmt in formats:
         try: return datetime.strptime(value,fmt).date()
         except ValueError: pass
     return None
@@ -100,9 +104,14 @@ def extract_amount(text):
 
 def extract_receipt_date(text):
     if not text: return None
-    candidates=re.findall(r"\b(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]20\d{2})\b",text)
-    for c in candidates:
-        parsed=parse_date(c)
+    patterns=(
+        r"\b(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]20\d{2})\b",
+        r"\b\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]{3,9}\.?[,]?\s+20\d{2}\b",
+        r"\b[A-Za-z]{3,9}\.?\s+\d{1,2}(?:st|nd|rd|th)?[,]?\s+20\d{2}\b",
+    )
+    candidates=[candidate for pattern in patterns for candidate in re.findall(pattern,text,re.I)]
+    for candidate in candidates:
+        parsed=parse_date(candidate)
         if parsed:return parsed
     return None
 
