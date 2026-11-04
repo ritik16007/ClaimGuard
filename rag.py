@@ -22,6 +22,21 @@ TOPIC_DOCUMENTS={
     "lodging": ("hotel", "lodging", "accommodation", "stay"),
 }
 
+def target_heading(query: str) -> str | None:
+    """Route common FAQ phrasings to the handbook section that answers them."""
+    low=query.lower()
+    if re.search(r"\b(receipt|bill)\b.*\b(detail|details|information|show|need|required)\b",low):
+        return "Travel evidence and review"
+    if re.search(r"\b(how long|deadline|within how many days|when .*submit)\b",low) and re.search(r"\b(submit|claim|expense|reimburse)\b",low):
+        return "Submission deadline"
+    if re.search(r"\b(meal|meals|food|dining)\b",low) and re.search(r"\b(limit|cap|allowance|maximum|auto.?approv)\b",low):
+        return "Business meals"
+    if re.search(r"\b(hotel|lodging|accommodation|stay)\b",low) and re.search(r"\b(limit|cap|allowance|maximum)\b",low):
+        return "Accommodation limit"
+    if re.search(r"\b(travel|taxi|cab|transport)\b",low) and re.search(r"\b(limit|cap|allowance|maximum)\b",low):
+        return "Local transport"
+    return None
+
 def mode():
     if not EMBED_MARKER.exists(): return "feature-hash-v2"
     try:
@@ -80,6 +95,7 @@ def retrieve(conn, query: str, limit: int = 4):
     ranked = []
     terms=[w for w in re.findall(r"[a-z0-9]+",query.lower()) if w not in STOP and len(w)>1]
     query_words=set(terms)
+    wanted_heading=target_heading(query)
     requested_docs=set()
     for doc_key, aliases in TOPIC_DOCUMENTS.items():
         if query_words.intersection(aliases):
@@ -115,6 +131,8 @@ def retrieve(conn, query: str, limit: int = 4):
                 category_bonus -= 0.45
         heading_text=row["heading"].lower()
         heading_bonus=sum(0.10 for term in terms if term in heading_text)
+        if wanted_heading and row["heading"].casefold()==wanted_heading.casefold():
+            heading_bonus += 2.0
         topic_heading_bonus=0.0
         for aliases in TOPIC_DOCUMENTS.values():
             if query_words.intersection(aliases) and any(alias in heading_text for alias in aliases):

@@ -15,8 +15,9 @@ POLICY_TERMS={"reimbursement","reimburse","expense","claim","receipt","policy","
 CATEGORY_WORDS={"travel":"travel","taxi":"travel","transport":"travel","flight":"travel","train":"travel","meals":"meals","meal":"meals","food":"meals","dining":"meals","lodging":"lodging","hotel":"lodging","accommodation":"lodging","stay":"lodging"}
 
 def create_app(config=None):
+    data_dir=Path(os.environ.get("CLAIMGUARD_DATA_DIR",ROOT/"instance"))
     app=Flask(__name__,instance_path=str(ROOT/"instance"),instance_relative_config=True)
-    app.config.update(SECRET_KEY=os.environ.get("CLAIMGUARD_SECRET"),DATABASE=str(ROOT/"instance"/"claimguard.sqlite3"),UPLOAD_DIR=str(ROOT/"instance"/"uploads"),MAX_CONTENT_LENGTH=11*1024*1024,SESSION_COOKIE_HTTPONLY=True,SESSION_COOKIE_SAMESITE="Lax")
+    app.config.update(SECRET_KEY=os.environ.get("CLAIMGUARD_SECRET"),DATABASE=str(data_dir/"claimguard.sqlite3"),UPLOAD_DIR=str(data_dir/"uploads"),MAX_CONTENT_LENGTH=11*1024*1024,SESSION_COOKIE_HTTPONLY=True,SESSION_COOKIE_SAMESITE="Lax")
     if config: app.config.update(config)
     Path(app.config["DATABASE"]).parent.mkdir(parents=True,exist_ok=True)
     Path(app.config["UPLOAD_DIR"]).mkdir(parents=True,exist_ok=True)
@@ -127,7 +128,14 @@ def create_app(config=None):
             if unknown: category=unknown.group(1)
         m=re.search(r"\b(20\d{2}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]20\d{2})\b",text)
         expdate=m.group(1) if m else ""
-        intent=bool(re.search(r"\b(file|submit|claim|reimburse|reimbursement|expense claim)\b",low))
+        # A question that mentions submitting a claim is not itself a claim
+        # submission. Route to the claim engine only for an explicit filing
+        # action; an uploaded receipt still starts a claim below.
+        filing_action=bool(
+            re.search(r"^\s*(?:please\s+)?(?:file|submit|create|start|raise)\s+(?:(?:a|an|the|my|new)\s+)?(?:[a-z-]+\s+){0,2}(?:claim|expense|reimbursement)\b",low)
+            or re.search(r"\b(?:i want to|i need to|please help me|help me|can you|could you)\s+(?:please\s+)?(?:file|submit|create|start|raise)\b",low)
+        )
+        intent=filing_action
         return category,expdate,intent
 
     @app.post("/api/chat")

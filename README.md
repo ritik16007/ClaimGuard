@@ -11,6 +11,14 @@ ClaimGuard is a fresh, local-first reimbursement demo. It uses an HTML/CSS/JavaS
 
 The first launch needs an internet connection for Python packages. Once installed, the website and its feature-hash policy search work offline. All app files and data stay in this project folder.
 
+## Publish a web demo
+
+GitHub stores the source code; it does not run this Flask application. GitHub Pages is for static websites and cannot run the Python backend. For a hosted demo, connect this repository to a Python web host such as Render and create a **Web Service** (not a Static Site). Use build command `pip install -r requirements.txt` and start command `gunicorn app:app`. Set `CLAIMGUARD_SECRET` to a long random value in the host's environment settings.
+
+ClaimGuard writes SQLite and uploaded receipts under `instance` by default. On a host, set `CLAIMGUARD_DATA_DIR` to the mount path of persistent storage (for example `/var/data` when a persistent disk is mounted there). Without persistent storage, database records and receipt files can disappear on a restart or redeploy. Some hosts only provide persistent disks on paid plans. Do not use real employee information or receipts in this hackathon demo.
+
+The local Qwen model is not included in the GitHub repository, and a model installed on your PC is not available to a hosted server. The hosted version therefore uses the grounded policy retrieval fallback unless you separately provision a compatible model runtime and model on the host.
+
 ### Demo accounts
 
 | Role | Username | Password |
