@@ -1,0 +1,205 @@
+%PDF-1.4
+%ClaimGuard sample policy
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 492 >>
+stream
+BT
+/F1 11 Tf
+52 790 Td
+15 TL
+(Reimbursement Approval Rules) Tj
+T*
+(FICTIONAL COMPANY POLICY  |  PAGE 1) Tj
+T*
+() Tj
+T*
+(Decision outcomes) Tj
+T*
+() Tj
+T*
+(The policy engine returns auto-approved, pending authority review, or rejected. It never) Tj
+T*
+(sends money. Auto-approved claims enter the authority payment queue. Reviewed claims) Tj
+T*
+(enter that queue only after an authority approves them.) Tj
+T*
+() Tj
+T*
+(INR | ClaimGuard MVP sample handbook | Not a real company policy) Tj
+T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 498 >>
+stream
+BT
+/F1 11 Tf
+52 790 Td
+15 TL
+(Reimbursement Approval Rules) Tj
+T*
+(FICTIONAL COMPANY POLICY  |  PAGE 2) Tj
+T*
+() Tj
+T*
+(Automatic approval) Tj
+T*
+() Tj
+T*
+(Auto-approval is limited to known categories at or below their stated cap, with readable) Tj
+T*
+(receipt evidence, matching dates and amounts, a timely submission, and no duplicate or) Tj
+T*
+(risk flag. One failed prerequisite prevents auto-approval.) Tj
+T*
+() Tj
+T*
+(INR | ClaimGuard MVP sample handbook | Not a real company policy) Tj
+T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 541 >>
+stream
+BT
+/F1 11 Tf
+52 790 Td
+15 TL
+(Reimbursement Approval Rules) Tj
+T*
+(FICTIONAL COMPANY POLICY  |  PAGE 3) Tj
+T*
+() Tj
+T*
+(Authority review) Tj
+T*
+() Tj
+T*
+(Unknown categories, amounts above an auto-approval cap, uncertain OCR, possible) Tj
+T*
+(duplicates, late submissions, mixed bills, and policy exceptions are routed to an) Tj
+T*
+(authority. A manager or authority reviews those claims and may approve or reject them) Tj
+T*
+(with a recorded reason.) Tj
+T*
+() Tj
+T*
+(INR | ClaimGuard MVP sample handbook | Not a real company policy) Tj
+T*
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 852 >>
+stream
+BT
+/F1 11 Tf
+52 790 Td
+15 TL
+(Reimbursement Approval Rules) Tj
+T*
+(FICTIONAL COMPANY POLICY  |  PAGE 4) Tj
+T*
+() Tj
+T*
+(Direct rejection and duplicate checks) Tj
+T*
+() Tj
+T*
+(An exact receipt-file duplicate already recorded in the database is rejected. Duplicate) Tj
+T*
+(claim submissions using that exact file are rejected and logged. Clearly invalid amounts) Tj
+T*
+(or dates, and attempts to override controls or demand an unauthorised payment, are also) Tj
+T*
+(rejected. The system records the file's SHA-256 fingerprint and checks it before) Tj
+T*
+(processing a repeat. A different file that may represent the same purchase is held for) Tj
+T*
+(human review. OCR is an aid: uncertainty triggers review and is never described as) Tj
+T*
+(genuine verification.) Tj
+T*
+() Tj
+T*
+(INR | ClaimGuard MVP sample handbook | Not a real company policy) Tj
+T*
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 614 >>
+stream
+BT
+/F1 11 Tf
+52 790 Td
+15 TL
+(Reimbursement Approval Rules) Tj
+T*
+(FICTIONAL COMPANY POLICY  |  PAGE 5) Tj
+T*
+() Tj
+T*
+(Authority payment queue) Tj
+T*
+() Tj
+T*
+(Auto-approved claims and authority-approved claims appear in the payment queue. An) Tj
+T*
+(authority may record a demo payment confirmation there. This action changes the demo) Tj
+T*
+(record only; no bank, payroll, or payment provider is connected. ClaimGuard does not) Tj
+T*
+(trigger a bank payout or transfer; only an authority can record a demo confirmation.) Tj
+T*
+() Tj
+T*
+(INR | ClaimGuard MVP sample handbook | Not a real company policy) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000035 00000 n 
+0000000084 00000 n 
+0000000166 00000 n 
+0000000341 00000 n 
+0000000884 00000 n 
+0000001059 00000 n 
+0000001608 00000 n 
+0000001783 00000 n 
+0000002375 00000 n 
+0000002551 00000 n 
+0000003455 00000 n 
+0000003632 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+4298
+%%EOF

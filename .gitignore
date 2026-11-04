@@ -1,0 +1,17 @@
+__pycache__/
+.venv/
+instance/
+ClaimGuard-Web/
+uploads/
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+models/*.gguf
+models/*.part
+models/live-check.json
+models/embedding-ready.txt
+models/embeddings/
+*.pyc
