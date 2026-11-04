@@ -17,7 +17,7 @@ def suspicious(text):
 def parse_date(value):
     if not value: return None
     value=str(value).strip()
-    for fmt in ("%Y-%m-%d","%d/%m/%Y","%d-%m-%Y","%d.%m.%Y","%d/%m/%y","%d-%m-%y"):
+    for fmt in ("%Y-%m-%d","%Y/%m/%d","%d/%m/%Y","%d-%m-%Y","%d.%m.%Y","%d/%m/%y","%d-%m-%y"):
         try: return datetime.strptime(value,fmt).date()
         except ValueError: pass
     return None
@@ -107,9 +107,14 @@ def claim_submit(db_path, upload_dir, employee_id, category, date_text, purpose,
                 return dict(id=cur.lastrowid,status="rejected",reason="This exact receipt file is already in the database, so the repeat claim was rejected.")
         missing=[]
         if not category: missing.append("expense category (travel, meals, or lodging)")
-        if not exp_date: missing.append("expense date (YYYY-MM-DD)")
+        if not exp_date: missing.append("expense date (YYYY-MM-DD or YYYY/MM/DD)")
         if data is None: missing.append("receipt image or PDF")
-        if missing:return dict(status="need_info",reason="To file a claim, please provide all three together: (1) attach the receipt image or PDF, (2) give the expense date as YYYY-MM-DD, and (3) name the category (travel, meals, lodging, or another category for authority review).")
+        if missing:
+            if len(missing)==1:
+                prompt=f"To continue this claim, please provide the missing {missing[0]}."
+            else:
+                prompt="To continue this claim, please provide the missing details: "+"; ".join(missing)+"."
+            return dict(status="need_info",reason=prompt)
         extracted=extract_receipt_text(data,ext)
         amount=extract_amount(extracted)
         receipt_day=extract_receipt_date(extracted)

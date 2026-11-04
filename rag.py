@@ -27,6 +27,8 @@ def target_heading(query: str) -> str | None:
     low=query.lower()
     if re.search(r"\b(receipt|bill)\b.*\b(detail|details|information|show|need|required)\b",low):
         return "Travel evidence and review"
+    if re.search(r"\b(how do i|how can i|how to|what do i need to|what should i do to)\b.*\b(file|submit|claim|reimburse)",low):
+        return "Claim filing steps and assistant scope"
     if re.search(r"\b(how long|deadline|within how many days|when .*submit)\b",low) and re.search(r"\b(submit|claim|expense|reimburse)\b",low):
         return "Submission deadline"
     if re.search(r"\b(meal|meals|food|dining)\b",low) and re.search(r"\b(limit|cap|allowance|maximum|auto.?approv)\b",low):
