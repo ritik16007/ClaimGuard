@@ -11,7 +11,19 @@ MAX_UPLOAD=10*1024*1024
 
 def suspicious(text):
     s=text.lower()
-    patterns=[r"ignore (all )?(previous|prior|system)",r"override (the )?(policy|rules|limit|instructions)",r"bypass (the )?(policy|approval|checks)",r"forget (your )?(rules|instructions)",r"reveal (the )?(system prompt|prompt)",r"pretend (you are|to be)",r"reimburse me.{0,30}(100000|\d{5,})",r"pay me.{0,30}(100000|\d{5,})"]
+    patterns=[
+        # Accept common paraphrases, including "ignore all the previous commands".
+        r"\bignore\s+(?:all\s+)?(?:the\s+)?(?:previous|prior|earlier|above|system)\b",
+        r"\b(?:disregard|forget)\s+(?:(?:all|the)\s+)?(?:previous|prior|earlier|above|system)\s+(?:commands?|instructions?|rules?)\b",
+        r"\boverride\s+(?:the\s+)?(?:policy|rules|limit|instructions)\b",
+        r"\bbypass\s+(?:the\s+)?(?:policy|approval|checks|limits|controls)\b",
+        r"\bforget\s+(?:your\s+)?(?:rules|instructions)\b",
+        r"\breveal\s+(?:the\s+)?(?:system prompt|prompt)\b",
+        r"\bpretend\s+(?:you are|to be)\b",
+        r"\b(?:reimburse|pay)\s+me\b.{0,45}\b(?:100000|\d{5,})\b",
+        # Reject demands for approval of a large amount, regardless of wording.
+        r"\b(?:approve|accept|authorize)\b.{0,70}\b(?:claim|reimbursement|payment)\b.{0,50}\b(?:100000|\d{5,})\b",
+    ]
     return any(re.search(p,s) for p in patterns)
 
 def parse_date(value):

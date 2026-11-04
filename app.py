@@ -14,6 +14,17 @@ ROOT=Path(__file__).resolve().parent
 POLICY_TERMS={"reimbursement","reimburse","expense","claim","receipt","policy","travel","taxi","meal","food","hotel","lodging","accommodation","limit","allowance","approval","duplicate","deadline","mileage","payment","exception","submit","bill"}
 CATEGORY_WORDS={"travel":"travel","taxi":"travel","transport":"travel","flight":"travel","train":"travel","meals":"meals","meal":"meals","food":"meals","dining":"meals","lodging":"lodging","hotel":"lodging","accommodation":"lodging","stay":"lodging"}
 
+POLICY_ANCHOR_RE=re.compile(r"\b(?:reimburse\w*|claims?|receipts?|polic(?:y|ies)|approv\w*|allowances?|eligib\w*|deadline|submiss\w*|duplicate\w*|mileage|business travel|business trip|manager review|payment queue)\b",re.I)
+POLICY_RULE_RE=re.compile(r"\b(?:limit|cap|allowance|eligible|eligibility|reimburse\w*|policy|claim|receipt|approval|deadline|submit\w*|duplicate|proof|document\w*|company)\b",re.I)
+
+def is_reimbursement_question(message):
+    text=message.strip()
+    if POLICY_ANCHOR_RE.search(text):
+        return True
+    # A category alone (for example, "living expense") is not enough.
+    # Pair a supported category with a rule/question term such as "limit".
+    has_category=any(re.search(r"\b"+re.escape(word)+r"\b",text,re.I) for word in CATEGORY_WORDS)
+    return has_category and bool(POLICY_RULE_RE.search(text))
 def create_app(config=None):
     data_dir=Path(os.environ.get("CLAIMGUARD_DATA_DIR",ROOT/"instance"))
     app=Flask(__name__,instance_path=str(ROOT/"instance"),instance_relative_config=True)
@@ -103,7 +114,7 @@ def create_app(config=None):
     def answer_policy(message):
         query=message.strip()
         if suspicious(query):return "I can’t follow requests to override policy or bypass claim checks. I can help with reimbursement rules or filing a claim."
-        if not any(re.search(r"\b"+re.escape(term)+r"\b",query.lower()) for term in POLICY_TERMS):
+        if not is_reimbursement_question(query):
             return "Sorry, I can only help with company reimbursement policies and filing reimbursement claims."
         if not policy_ready.is_set():
             return "I’m preparing the local policy library. Please try that question again in a few seconds; claim filing is available meanwhile."
